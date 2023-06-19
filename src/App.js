@@ -1,12 +1,54 @@
 import React from 'react';
 import "./App.css";
 import ReleaseCard from './ReleaseCard';
-import data from "./data/sample.json";
 import Track from './Track';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+
+
 
 function App() {
+  const [releases, setReleases] = useState([]);
   const [tracks, setTracks] = useState([]);
+  const [selectedAlbum, setSelectedAlbum] = useState();
+
+  const token = "BQDgBd3drCl7Ka2N_VwPyr6DB3N44htpuu4UZJ45uH_JDAa0zirD3CZA8I4f0-KsMFFo5YIFjADIuNybDP1MtrR76s00n5zuneLFlXPtkEdkxG3M4T6VER-a5pkm7lm8DC8-sSG5Nx6Lr0A8iekqOOoDf_DwV21axz1Tdwgm60PT9opEtkuXtpMny5zSYn7SVOSiqIMztB26Iic";
+
+  useEffect( () => {
+      async function fetchData(){
+        const response = await fetch("https://api.spotify.com/v1/browse/new-releases", {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+
+        });
+        const data = await response.json();
+        const albums = data["albums"]["items"];
+        setReleases(albums);
+
+      }
+      fetchData();
+
+  }, []);
+
+  useEffect(() => {
+    if(!selectedAlbum) {
+      return;
+    }
+
+    async function fetchData(){
+      const albumId = selectedAlbum.id;
+      const response = await fetch(`https://api.spotify.com/v1/albums/${albumId}/tracks`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+
+        }
+      });
+      const data = await response.json();
+      const tracks = data["items"];
+      setTracks(tracks);
+    }
+    fetchData();
+  }, [selectedAlbum]);
 
   return(
     <div className='container'>
@@ -14,9 +56,9 @@ function App() {
 
           <div className='col-9'>
             <div className='row'>
-            {data.map(item => (
-            <div className='col-4' style = {{margin: "5px"}} key = {item.id} onClick={() => setTracks(item["tracks"])}>
-              <ReleaseCard album = {item.album} artist = {item.artist} image = {item.image} url = {item.url} id = {item.id} />
+            {releases.map(item => (
+              <div className='col-4' style={{margin: "10px"}} key = {item.id} onClick={() => setSelectedAlbum(item)}>
+                <ReleaseCard album = {item.name} artist={item["artists"][0]["name"]} image={item.images[0]["url"]} url={item["external_urls"]["spotify"]} id={item.id} />
             </div>
             ))}
             </div>
@@ -26,7 +68,7 @@ function App() {
             <div className='row'>
               {tracks.map(item =>(
                 <div className = 'row' style={{marginLeft: "10px"}}>
-                <Track artist = {item.artist} url = {item.url} id = {item.id} preview_url={item.preview_url} duration_ms={item.duration_ms} name = {item.name} />
+                <Track artist={item["artists"][0]["name"]} url={item["external_urls"]["spotify"]} id = {item.id} preview_url={item.preview_url} duration_ms={item.duration_ms} name = {item.name} /> 
               </div>
               ))}
             </div>
