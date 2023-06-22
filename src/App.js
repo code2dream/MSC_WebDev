@@ -11,7 +11,7 @@ function App() {
   const [tracks, setTracks] = useState([]);
   const [selectedAlbum, setSelectedAlbum] = useState();
 
-  const token = "BQDgBd3drCl7Ka2N_VwPyr6DB3N44htpuu4UZJ45uH_JDAa0zirD3CZA8I4f0-KsMFFo5YIFjADIuNybDP1MtrR76s00n5zuneLFlXPtkEdkxG3M4T6VER-a5pkm7lm8DC8-sSG5Nx6Lr0A8iekqOOoDf_DwV21axz1Tdwgm60PT9opEtkuXtpMny5zSYn7SVOSiqIMztB26Iic";
+  const token = "BQAkIX9E33KG4t77IfF9AgOV59jh6RkVQfuI8uurD_RduxWK2W9NtRPpgkQv3uOmmLMnc3PDw0oTa4xVG9PyeJae8PPLtGnon_4pCUHqvFU5Y2xhHyntTaBe7SWxcu9GzbwylINb1yEhLccUpsxw5Xh4TKnfsrW6ZJrq1w7jJaKWqJ9lyNAs5z8TumlwymnTIQGN1cg";
 
   useEffect( () => {
       async function fetchData(){
@@ -57,7 +57,7 @@ function App() {
           <div className='col-9'>
             <div className='row'>
             {releases.map(item => (
-              <div className='col-4' style={{margin: "10px"}} key = {item.id} onClick={() => setSelectedAlbum(item)}>
+              <div className='col-4' style={{margin: "5px"}} key = {item.id} onClick={() => setSelectedAlbum(item)}>
                 <ReleaseCard album = {item.name} artist={item["artists"][0]["name"]} image={item.images[0]["url"]} url={item["external_urls"]["spotify"]} id={item.id} />
             </div>
             ))}
@@ -66,8 +66,9 @@ function App() {
 
           <div className='col-3'>
             <div className='row'>
+            <h2>Tracks</h2>
               {tracks.map(item =>(
-                <div className = 'row' style={{marginLeft: "10px"}}>
+                <div className = 'row1'>
                 <Track artist={item["artists"][0]["name"]} url={item["external_urls"]["spotify"]} id = {item.id} preview_url={item.preview_url} duration_ms={item.duration_ms} name = {item.name} /> 
               </div>
               ))}
@@ -80,4 +81,6 @@ function App() {
 }
 
 export default App;
+
+
 
